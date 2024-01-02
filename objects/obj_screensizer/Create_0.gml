@@ -11,3 +11,4 @@ mouse_xprevious = mouse_x;
 mouse_yprevious = mouse_y;
 captionalpha = 0;
 disappearbuffer = 0;
+depth = -9999;

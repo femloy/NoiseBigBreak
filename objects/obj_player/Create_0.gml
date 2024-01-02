@@ -7,9 +7,13 @@ enum states
 	jump,
 	slide,
 	hurt,
-	wallslide
+	wallslide,
+	bounce,
+	actor
 }
+#macro mach2_time 30
 
+depth = -6;
 hp = 4;
 image_speed = 0.35;
 hsp = 0;
@@ -25,9 +29,49 @@ yscale = 1;
 movespeed = 0;
 mach2 = 0;
 jumpstop = false;
+inv = 0;
 
+input_buffer_jump = 0;
+
+verticalpos = 0;
+verticalspd = 0;
+
+targetRoom = 0;
+targetDoor = "A";
+
+scr_player_addslopemomentum = function(acc, dec)
+{
+	with (instance_place(x, y + 1, obj_slope))
+	{
+		if sign(image_xscale) == -sign(other.xscale) && other.movespeed < 19
+			other.movespeed += acc;
+		else if other.movespeed > 12
+			other.movespeed -= dec;
+	}
+}
+scr_hurtplayer = function()
+{
+	if state == states.hurt or inv > 0
+		exit;
+	
+	hp--;
+	if hp <= 0
+		instance_destroy();
+	
+	audio_play_sound(sfx_hurt, 0, false);
+	grounded = false;
+	movespeed = 0;
+	hsp = xscale * -6;
+	vsp = -10;
+	state = states.hurt;
+	sprite_index = spr_player_hurt;
+}
+
+// effects
 machsnd = noone;
 machsnd_play = noone;
+part_time = 0;
+jumpclouds = 0;
 
 set_machsnd = function(sound)
 {
@@ -44,17 +88,4 @@ set_machsnd = function(sound)
 	}
 	else
 		machsnd = noone;
-}
-scr_player_addslopemomentum = function(slow_acc, fast_acc)
-{
-	with (instance_place(x, y + 1, obj_slope))
-	{
-		if (sign(image_xscale) == -sign(other.xscale))
-		{
-			if abs(image_yscale) < abs(image_xscale) // wide slope
-				other.movespeed += slow_acc;
-			else // normal slope
-				other.movespeed += fast_acc;
-		}
-	}
 }

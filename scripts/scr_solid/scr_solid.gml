@@ -40,34 +40,56 @@ function scr_solid(_x, _y)
 }
 function check_slope(slope_object)
 {
+	if live_call(slope_object) return live_result;
+	
 	var slope = instance_place(x, y, slope_object);
-	if (slope)
+	with (slope)
 	{
-		with (slope)
+		var left = bbox_left;
+		var bottom = bbox_bottom;
+		var right = bbox_right;
+		var top = bbox_top;
+		
+		if sign(image_xscale) == -1
 		{
-			var object_side = 0;
-			var slope_start = 0;
-			var slope_end = 0;
-			if (image_xscale > 0)
-			{
-				object_side = other.bbox_right;
-				slope_start = bbox_bottom;
-				slope_end = bbox_top;
-			}
-			else
-			{
-				object_side = other.bbox_left;
-				slope_start = bbox_top;
-				slope_end = bbox_bottom;
-			}
-			var m = (sign(image_xscale) * (bbox_bottom - bbox_top)) / (bbox_right - bbox_left);
-			slope = slope_start - round(m * (object_side - bbox_left));
-			if (other.bbox_bottom >= slope)
-			{
-				return true;
-			}
+			left = bbox_right;
+			right = bbox_left;
+		}
+		
+		if object_index == obj_fuckedupslope
+		{
+			return place_meeting(x, y, other);
+		}
+		else if object_index == obj_convexslope
+		{
+			right += sprite_width;
+			bottom += sprite_height;
+			return collision_ellipse(left, top, right, bottom, other, true, false);
+		}
+		else
+		{
+			return rectangle_in_triangle(other.bbox_left, other.bbox_top, other.bbox_right, other.bbox_bottom,
+				left, bottom, right, bottom, right, top);
 		}
 	}
+	return false;
+}
+function check_slope_at(_x, _y)
+{
+	var old_x = x;
+	var old_y = y;
+	x = _x;
+	y = _y;
+	
+	if check_slope(obj_slope)
+	{
+		x = old_x;
+		y = old_y;
+		return true;
+	}
+	
+	x = old_x;
+	y = old_y;
 	return false;
 }
 function scr_solid_slope(_x, _y)
@@ -90,7 +112,6 @@ function scr_solid_slope(_x, _y)
 	y = old_y;
 	return false;
 }
-
 function scr_solid_player(_x, _y)
 {
 	var old_x = x;
@@ -152,7 +173,7 @@ function scr_solid_player(_x, _y)
 	}
 	*/
 	
-	if (check_slope_player(obj_slope))
+	if (check_slope(obj_slope))
 	{
 		x = old_x;
 		y = old_y;
@@ -160,7 +181,7 @@ function scr_solid_player(_x, _y)
 	}
 	
 	/*
-	if (state == states.grind && check_slope_player(obj_grindrailslope))
+	if (state == states.grind && check_slope(obj_grindrailslope))
 	{
 		x = old_x;
 		y = old_y;
@@ -170,35 +191,5 @@ function scr_solid_player(_x, _y)
 	
 	x = old_x;
 	y = old_y;
-	return false;
-}
-function check_slope_player(slope_obj)
-{
-	var slope = instance_place(x, y, slope_obj);
-	if (slope)
-	{
-		with (slope)
-		{
-			var object_side = 0;
-			var slope_start = 0;
-			var slope_end = 0;
-			if (image_xscale > 0)
-			{
-				object_side = other.bbox_right;
-				slope_start = bbox_bottom;
-				slope_end = bbox_top;
-			}
-			else
-			{
-				object_side = other.bbox_left;
-				slope_start = bbox_top;
-				slope_end = bbox_bottom;
-			}
-			var m = (sign(image_xscale) * (bbox_bottom - bbox_top)) / (bbox_right - bbox_left);
-			slope = slope_start - round(m * (object_side - bbox_left));
-			if (other.bbox_bottom >= slope)
-				return true;
-		}
-	}
 	return false;
 }

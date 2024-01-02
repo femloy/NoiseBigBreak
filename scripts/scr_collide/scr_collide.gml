@@ -1,5 +1,8 @@
 function scr_collide()
 {
+	grounded = false;
+	
+	// vertical
 	var vsp_final = vsp + vsp_carry;
 	vsp_carry = 0;
 	var target_y = round(y + vsp_final);
@@ -32,6 +35,7 @@ function scr_collide()
 		break;
 	}
 	
+	// horizontal
 	var hsp_final = hsp + hsp_carry;
 	hsp_carry = 0;
 	var target_x = round(x + hsp_final);
@@ -54,6 +58,7 @@ function scr_collide()
 		}
 		repeat (abs(target_x - x))
 		{
+			// slopes
 			for (var k = 1; k <= 3; k++)
 			{
 				if (scr_solid(x + sh, y) && !scr_solid(x + sh, y - k))
@@ -61,6 +66,7 @@ function scr_collide()
 				if (!scr_solid(x + sh, y) && !scr_solid(x + sh, y + 1) && scr_solid(x + sh, y + (k + 1)))
 					y += k;
 			}
+			
 			if (!scr_solid(x + sh, y))
 				x += sh;
 			else
@@ -70,8 +76,14 @@ function scr_collide()
 			}
 		}
 	}
+	
+	// gravity
 	if (vsp < 10)
 		vsp += grav;
+	
+	// on ground check
+	if vsp >= 0
+		grounded |= scr_solid(x, y + 1);
 }
 function scr_collide_player()
 {
@@ -121,7 +133,6 @@ function scr_collide_player()
 	var sh = sign(hsp_final);
 	
 	var down = scr_solid_player(x, y + 1);
-	
 	for (i = 0; i < t; i++)
 	{
 		if (!scr_solid_player(x + (bbox_size_x * sh), y) && down == scr_solid_player(x + (bbox_size_x * sh), y + 1) && !place_meeting(x + (bbox_size_x * sh), y, obj_slope) && !place_meeting(x, y, obj_slope) && !place_meeting(x + (bbox_size_x * sh), y + 1, obj_slope))
@@ -136,16 +147,23 @@ function scr_collide_player()
 		}
 		repeat (abs(target_x - x))
 		{
-			for (var k = 1; k <= 4; k++)
+			// slopes (find a way to optimize them)
+			var steepness = 4;
+			with obj_convexslope
+				if distance_to_object(other) < 1 steepness = max(image_yscale * 5, 12);
+			
+			for (var k = 1; k <= steepness; ++k)
 			{
-				if (scr_solid_player(x + sh, y) && !scr_solid_player(x + sh, y - k))
+				// up slopes
+				var infront = check_slope_at(x + sh, y);
+				if (infront && !check_slope_at(x + sh, y - k))
 					y -= k;
-				//if (state != states.ghost && state != states.rocket && state != states.UNKNOWN_1)
-				{
-					if (!scr_solid_player(x + sh, y) && !scr_solid_player(x + sh, y + 1) && scr_solid_player(x + sh, y + (k + 1)))
-						y += k;
-				}
+				
+				// down slopes
+				if place_meeting(x, y + 1, obj_slope) && (!infront && !scr_solid_player(x + sh, y + 1) && scr_solid_player(x + sh, y + k + 1))
+					y += k;
 			}
+			
 			if (!scr_solid_player(x + sh, y))
 				x += sh;
 			else
@@ -204,8 +222,9 @@ function scr_collide_player()
 	*/
 	
 	// on ground check
-	grounded |= scr_solid_player(x, y + 1);
-	grounded |= (vsp > 0 && !place_meeting(x, y, obj_platform) && place_meeting(x, y + 1, obj_platform));
+	if vsp >= 0
+		grounded |= scr_solid_player(x, y + 1);
+	
 	//if (platformid != -4 || (place_meeting(x, y + 1, obj_movingplatform) && !place_meeting(x, y - 3, obj_movingplatform)) || place_meeting(x, y + 8, obj_movingplatform && !place_meeting(x, y + 6, obj_movingplatform)))
 	//	grounded = true;
 	if (grounded && platformid == noone)

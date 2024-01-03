@@ -302,7 +302,7 @@ switch state
 			create_particle(x, y, spr_landcloud);
 			state = states.normal;
 		}
-		vsp = min(vsp, 7);
+		vsp = min(vsp, 8);
 		
 		if !place_meeting(x + xscale, y, obj_solid) or move == -xscale
 		{
@@ -404,11 +404,6 @@ else
 	grav = 0.5;
 
 // collide destructibles
-if movespeed > 12 or state == states.slide
-{
-	with instance_place(x + hsp, y, obj_destroyable)
-		instance_destroy();
-}
 if state == states.bounce
 {
 	with instance_place(x, y + 1, obj_destroyable)
@@ -417,6 +412,11 @@ if state == states.bounce
 		other.grounded = false;
 		instance_destroy();
 	}
+}
+if movespeed > 12 or state == states.slide
+{
+	with instance_place(x + hsp, y + vsp + 1, obj_destroyable)
+		instance_destroy();
 }
 
 scr_collide_player();

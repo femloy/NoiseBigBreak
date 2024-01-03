@@ -8,8 +8,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "noisette",
+    "path": "folders/Objects/level structure/noisette.yy",
   },
   "parentObjectId": {
     "name": "obj_noisette_point",

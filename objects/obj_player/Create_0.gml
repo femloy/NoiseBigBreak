@@ -9,7 +9,8 @@ enum states
 	hurt,
 	wallslide,
 	bounce,
-	actor
+	actor,
+	hitstun
 }
 #macro mach2_time 30
 

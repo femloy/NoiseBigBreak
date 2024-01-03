@@ -1,0 +1,32 @@
+collaboration would be neat.
+join the cheesed up discord (discord.gg/peppino)
+and help with sprite recreations.
+
+Bad recreations (need remaking):
+- mach2
+- jump
+- fall
+- dive
+- turn
+- mach2jump
+- mach2fall
+
+Sprites todo:
+- backflip start
+- backflip fall
+- bounce/walljump
+- wall slide going up
+- wall slide going down
+- wall slide jump (shown in the video with the decorated level)
+- fork slide
+- jump after slide start
+- jump after slide fall
+- noisette idle
+
+Sprites not priority:
+- HUD
+- Tileset
+- Background
+- Collectibles
+- Enemies
+- Particles

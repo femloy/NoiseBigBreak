@@ -12,8 +12,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "level structure",
+    "path": "folders/Objects/level structure.yy",
   },
   "parentObjectId": null,
   "persistent": false,

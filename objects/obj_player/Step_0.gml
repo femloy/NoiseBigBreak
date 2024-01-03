@@ -34,7 +34,7 @@ switch state
 			if place_meeting(x, y + 1, obj_slope)
 			{
 				vsp = -movespeed;
-				audio_play_sound(sfx_wallslide, 0, false);
+				sound_play_3d(sfx_wallslide, x, y);
 			
 				state = states.wallslide;
 				sprite_index = spr_player_wallslide;
@@ -73,7 +73,7 @@ switch state
 				if mach2 >= mach2_time
 				{
 					audio_stop_sound(sfx_stop);
-					audio_play_sound(sfx_stop, 0, false);
+					sound_play_3d(sfx_stop, x, y);
 				}
 				sprite_index = spr_player_stopping;
 			}
@@ -120,8 +120,7 @@ switch state
 			{
 				mach2 = mach2_time;
 				
-				if sprite_index != spr_player_runland && sprite_index != spr_player_turn
-					sprite_index = spr_player_mach3;
+				sprite_index = spr_player_mach3;
 				if movespeed < 16
 					movespeed = Approach(movespeed, 16, 0.4);
 				else if movespeed < 19
@@ -140,7 +139,7 @@ switch state
 			
 			if xscale != move && move != 0
 			{
-				audio_play_sound(sfx_jump, 0, false);
+				sound_play_3d(sfx_jump, x, y);
 				sprite_index = spr_player_backflip;
 				vsp = -16;
 				xscale = move;
@@ -150,14 +149,14 @@ switch state
 			}
 			else if mach2 >= mach2_time
 			{
-				audio_play_sound(sfx_highjump, 0, false);
+				sound_play_3d(sfx_highjump, x, y);
 				sprite_index = spr_player_glidejumpstart;
 				vsp = -16;
 				jumpclouds = 16;
 			}
 			else
 			{
-				audio_play_sound(sfx_jump, 0, false);
+				sound_play_3d(sfx_jump, x, y);
 				vsp = -14;
 				
 				if movespeed >= 12
@@ -175,8 +174,9 @@ switch state
 			state = states.jump;
 			sprite_index = spr_player_fall;
 		}
-		else if key_down2
+		else if key_down
 		{
+			sound_play_3d(sfx_slide, x, y);
 			movespeed = max(movespeed, 10);
 			
 			state = states.slide;
@@ -257,7 +257,7 @@ switch state
 		if grounded
 		{
 			create_particle(x, y, spr_landcloud);
-			audio_play_sound(sfx_land, 0, false);
+			sound_play_3d(sfx_land, x, y);
 			
 			state = states.normal;
 			image_index = 0;
@@ -271,7 +271,7 @@ switch state
 				movespeed = 0;
 			else
 			{
-				audio_play_sound(sfx_wallslide, 0, false);
+				sound_play_3d(sfx_wallslide, x, y);
 			
 				state = states.wallslide;
 				sprite_index = spr_player_wallslide;
@@ -281,6 +281,8 @@ switch state
 		
 		if movespeed > 2 && key_down2
 		{
+			sound_play_3d(sfx_groundpound, x, y);
+			
 			state = states.slide;
 			sprite_index = spr_player_dive;
 			vsp = 10;
@@ -298,7 +300,7 @@ switch state
 		
 		if grounded
 		{
-			audio_play_sound(sfx_land, 0, false);
+			sound_play_3d(sfx_land, x, y);
 			create_particle(x, y, spr_landcloud);
 			state = states.normal;
 		}
@@ -313,7 +315,7 @@ switch state
 		else if input_buffer_jump
 		{
 			input_buffer_jump = 0;
-			audio_play_sound(sfx_jump, 0, false);
+			sound_play_3d(sfx_jump, x, y);
 			
 			xscale *= -1;
 			movespeed = 10;
@@ -331,40 +333,45 @@ switch state
 		
 		if grounded
 		{
-			if ++part_time >= 16
-			{
-				part_time = 0;
-				create_particle(x, y, spr_dashcloud, xscale);
-			}
-			
 			if sprite_index == spr_player_dive
 			{
-				audio_play_sound(sfx_land, 0, false);
-				sprite_index = spr_player_crouchslip;
-			}
-			movespeed = Approach(movespeed, 0, 0.1);
-			
-			if movespeed <= 0
-				state = states.normal;
-			
-			if input_buffer_jump
-			{
-				input_buffer_jump = 0;
-				audio_play_sound(sfx_jump, 0, false);
-				create_particle(x, y, spr_highjumpcloud2);
+				sound_play_3d(sfx_land, x, y);
 				
-				jumpstop = false;
-				sprite_index = spr_player_longjump;
+				state = states.normal;
+				sprite_index = spr_player_runland;
 				image_index = 0;
-				state = states.jump;
-				vsp = -14;
-				jumpclouds = 12;
 			}
-			scr_player_addslopemomentum(0.4, 0.2);
+			else
+			{
+				if ++part_time >= 16
+				{
+					part_time = 0;
+					create_particle(x, y, spr_dashcloud, xscale);
+				}
+				movespeed = Approach(movespeed, 0, 0.1);
+			
+				if movespeed <= 0
+					state = states.normal;
+			
+				if input_buffer_jump
+				{
+					input_buffer_jump = 0;
+					sound_play_3d(sfx_jump, x, y);
+					create_particle(x, y, spr_highjumpcloud2);
+				
+					jumpstop = false;
+					sprite_index = spr_player_longjump;
+					image_index = 0;
+					state = states.jump;
+					vsp = -14;
+					jumpclouds = 12;
+				}
+				scr_player_addslopemomentum(0.4, 0.2);
+			}
 		}
 		else if place_meeting(x + sign(hsp), y, obj_solid) && !place_meeting(x + hsp, y, obj_destroyable)
 		{
-			audio_play_sound(sfx_wallslide, 0, false);
+			sound_play_3d(sfx_wallslide, x, y);
 			
 			state = states.wallslide;
 			sprite_index = spr_player_wallslide;
@@ -406,7 +413,7 @@ else
 // collide destructibles
 if state == states.bounce
 {
-	with instance_place(x, y + 1, obj_destroyable)
+	with instance_place(x, y + vsp + 1, obj_destroyable)
 	{
 		other.vsp = -14;
 		other.grounded = false;
@@ -415,7 +422,9 @@ if state == states.bounce
 }
 if movespeed > 12 or state == states.slide
 {
-	with instance_place(x + hsp, y + vsp + 1, obj_destroyable)
+	with instance_place(x + hsp, y, obj_destroyable)
+		instance_destroy();
+	with instance_place(x, y + vsp + 1, obj_destroyable)
 		instance_destroy();
 }
 

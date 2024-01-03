@@ -59,7 +59,7 @@ scr_hurtplayer = function()
 	if hp <= 0
 		instance_destroy();
 	
-	audio_play_sound(sfx_hurt, 0, false);
+	sound_play_3d(sfx_hurt, x, y);
 	grounded = false;
 	movespeed = 0;
 	hsp = xscale * -6;

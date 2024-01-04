@@ -35,7 +35,6 @@ if instance_exists(point)
 	{
 		x = point.x;
 		y = point.y;
-		image_xscale = point.image_xscale;
 	}
 }
 else

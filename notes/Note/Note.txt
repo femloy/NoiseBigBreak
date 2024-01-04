@@ -3,7 +3,6 @@ join the cheesed up discord (discord.gg/peppino)
 and help with sprite recreations.
 
 Bad recreations (need remaking):
-- mach2
 - jump
 - fall
 - dive
@@ -14,7 +13,6 @@ Bad recreations (need remaking):
 Sprites todo:
 - backflip start
 - backflip fall
-- bounce/walljump
 - wall slide going up
 - wall slide going down
 - wall slide jump (shown in the video with the decorated level)

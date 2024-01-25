@@ -180,7 +180,8 @@ switch state
 			movespeed = max(movespeed, 10);
 			
 			state = states.slide;
-			sprite_index = spr_player_crouchslip;
+			image_index = 0;
+			sprite_index = spr_player_forkstart;
 		}
 		break;
 	
@@ -218,7 +219,7 @@ switch state
 				spd = 0.1;
 			
 			movespeed = Approach(movespeed, 0, move == 0 ? 0.1 : 0.4);
-			if movespeed == 0 && move != 0
+			if movespeed == 0 && move != 0 && sprite_index != spr_player_backflip && sprite_index != spr_player_backflipfall
 				xscale = move;
 		}
 		else if movespeed < 10
@@ -250,6 +251,9 @@ switch state
 					break;
 				case spr_player_mach2jump:
 					sprite_index = spr_player_mach2fall;
+					break;
+				case spr_player_backflip:
+					sprite_index = spr_player_backflipfall;
 					break;
 			}
 		}
@@ -306,6 +310,8 @@ switch state
 		}
 		vsp = min(vsp, 8);
 		
+		sprite_index = vsp > 0 ? spr_player_wallslidedown : spr_player_wallslide;
+		
 		if !place_meeting(x + xscale, y, obj_solid) or move == -xscale
 		{
 			sprite_index = spr_player_fall;
@@ -330,6 +336,9 @@ switch state
 		if (place_meeting(x + sign(hsp), y, obj_solid) or scr_solid_slope(x + sign(hsp), y))
 		&& !place_meeting(x + hsp, y, obj_destroyable)
 			movespeed = 0;
+		
+		if sprite_index == spr_player_forkstart && image_index >= image_number - 1
+			sprite_index = spr_player_crouchslip;
 		
 		if grounded
 		{

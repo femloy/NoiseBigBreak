@@ -11,12 +11,9 @@ Bad recreations (need remaking):
 - mach2fall
 
 Sprites todo:
-- backflip start
-- backflip fall
 - wall slide going up
 - wall slide going down
 - wall slide jump (shown in the video with the decorated level)
-- fork slide
 - jump after slide start
 - jump after slide fall
 - noisette idle
